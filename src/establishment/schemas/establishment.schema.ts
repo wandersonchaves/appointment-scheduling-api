@@ -28,7 +28,7 @@ export class Establishment extends Document {
   addressInfo: {
     city: string;
     country: string;
-    ut: string;
+    uf: string;
     cep: string;
     number: number;
   };

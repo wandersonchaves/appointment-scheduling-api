@@ -7,7 +7,7 @@ export class AddressDTO {
 
   @IsString()
   @IsNotEmpty()
-  ut: string;
+  uf: string;
 
   @IsString()
   @IsNotEmpty()
