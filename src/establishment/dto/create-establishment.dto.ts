@@ -1,4 +1,3 @@
-// establishment.dto.ts
 import {
   IsString,
   IsNotEmpty,
