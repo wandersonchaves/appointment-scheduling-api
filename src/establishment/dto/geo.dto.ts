@@ -1,4 +1,3 @@
-// geo.dto.ts
 import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class GeoDTO {

@@ -1,26 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEstablishmentDTO } from './dto/create-establishment.dto';
-import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
+import { UpdateEstablishmentDTO } from './dto/update-establishment.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Establishment } from './schemas/establishment.schema';
 
 @Injectable()
 export class EstablishmentService {
-  create(createEstablishmentDto: CreateEstablishmentDTO) {
-    return 'This action adds a new establishment';
+  constructor(
+    @InjectModel(Establishment.name)
+    private readonly establishmentModel: Model<Establishment>,
+  ) {}
+
+  async create(
+    createEstablishmentDto: CreateEstablishmentDTO,
+  ): Promise<Establishment> {
+    try {
+      const newEstablishment = new this.establishmentModel(
+        createEstablishmentDto,
+      );
+      return await newEstablishment.save();
+    } catch (error) {
+      if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+        return { message: 'O email já está em uso.', status: 409 } as any;
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all establishment`;
+  async findAll(): Promise<Establishment[]> {
+    return await this.establishmentModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} establishment`;
+  async findOne(id: string): Promise<Establishment> {
+    return await this.establishmentModel.findById(id).exec();
   }
 
-  update(id: number, updateEstablishmentDto: UpdateEstablishmentDto) {
-    return `This action updates a #${id} establishment`;
+  async update(
+    id: string,
+    updateEstablishmentDto: UpdateEstablishmentDTO,
+  ): Promise<Establishment> {
+    return await this.establishmentModel
+      .findByIdAndUpdate(id, updateEstablishmentDto, {
+        new: true,
+      })
+      .exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} establishment`;
+  async remove(id: string): Promise<Establishment> {
+    return await this.establishmentModel.findByIdAndRemove(id).exec();
   }
 }
