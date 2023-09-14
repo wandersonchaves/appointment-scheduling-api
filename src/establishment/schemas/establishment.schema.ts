@@ -35,9 +35,18 @@ export class Establishment extends Document {
 
   @Prop({ type: Object, required: false })
   geoInfo: {
-    type: string;
-    coordinates: number[];
+    type: {
+      type: string;
+      enum: ['Point'];
+      default: 'Point';
+    };
+    coordinates: {
+      type: [number];
+      required: true;
+    };
   };
 }
 
 export const EstablishmentSchema = SchemaFactory.createForClass(Establishment);
+
+EstablishmentSchema.index({ geoInfo: '2dsphere' });
