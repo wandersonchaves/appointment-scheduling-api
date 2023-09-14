@@ -29,7 +29,7 @@ export class EstablishmentController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Establishment> {
     return await this.establishmentService.findOne(id);
   }
 
@@ -37,12 +37,12 @@ export class EstablishmentController {
   async update(
     @Param('id') id: string,
     @Body() updateEstablishmentDto: UpdateEstablishmentDto,
-  ) {
+  ): Promise<Establishment> {
     return await this.establishmentService.update(id, updateEstablishmentDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<Establishment> {
     return await this.establishmentService.remove(id);
   }
 }
