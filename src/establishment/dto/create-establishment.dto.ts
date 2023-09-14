@@ -51,7 +51,7 @@ export class CreateEstablishmentDTO {
 
 export class UpdateEstablishmentDto {
   @IsMongoId()
-  _id: string;
+  readonly _id: string;
 
   @IsString()
   @IsOptional()
@@ -92,10 +92,10 @@ export class UpdateEstablishmentDto {
 
 export class GetEstablishmentDto {
   @IsMongoId()
-  _id: string;
+  readonly _id: string;
 }
 
 export class DeleteEstablishmentDTO {
   @IsMongoId()
-  _id: string;
+  readonly _id: string;
 }
