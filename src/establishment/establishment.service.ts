@@ -19,6 +19,7 @@ export class EstablishmentService {
       const newEstablishment = new this.establishmentModel(
         createEstablishmentDto,
       );
+
       return await newEstablishment.save();
     } catch (error) {
       if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
