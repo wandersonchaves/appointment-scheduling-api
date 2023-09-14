@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class AddressDTO {
+export class AddressDto {
   @IsString()
   @IsNotEmpty()
   city: string;

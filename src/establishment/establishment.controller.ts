@@ -8,8 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { EstablishmentService } from './establishment.service';
-import { CreateEstablishmentDTO } from './dto/create-establishment.dto';
-import { UpdateEstablishmentDTO } from './dto/update-establishment.dto';
+import { CreateEstablishmentDto } from './dto/create-establishment.dto';
+import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { Establishment } from './schemas/establishment.schema';
 
 @Controller('establishment')
@@ -18,7 +18,7 @@ export class EstablishmentController {
 
   @Post()
   async create(
-    @Body() createEstablishmentDto: CreateEstablishmentDTO,
+    @Body() createEstablishmentDto: CreateEstablishmentDto,
   ): Promise<Establishment> {
     return await this.establishmentService.create(createEstablishmentDto);
   }
@@ -36,7 +36,7 @@ export class EstablishmentController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateEstablishmentDto: UpdateEstablishmentDTO,
+    @Body() updateEstablishmentDto: UpdateEstablishmentDto,
   ) {
     return await this.establishmentService.update(id, updateEstablishmentDto);
   }

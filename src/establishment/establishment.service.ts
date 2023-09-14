@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEstablishmentDTO } from './dto/create-establishment.dto';
-import { UpdateEstablishmentDTO } from './dto/update-establishment.dto';
+import { CreateEstablishmentDto } from './dto/create-establishment.dto';
+import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Establishment } from './schemas/establishment.schema';
@@ -13,7 +13,7 @@ export class EstablishmentService {
   ) {}
 
   async create(
-    createEstablishmentDto: CreateEstablishmentDTO,
+    createEstablishmentDto: CreateEstablishmentDto,
   ): Promise<Establishment> {
     try {
       const newEstablishment = new this.establishmentModel(
@@ -37,7 +37,7 @@ export class EstablishmentService {
 
   async update(
     id: string,
-    updateEstablishmentDto: UpdateEstablishmentDTO,
+    updateEstablishmentDto: UpdateEstablishmentDto,
   ): Promise<Establishment> {
     return await this.establishmentModel
       .findByIdAndUpdate(id, updateEstablishmentDto, {

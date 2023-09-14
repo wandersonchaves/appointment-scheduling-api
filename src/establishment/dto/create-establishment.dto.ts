@@ -7,11 +7,11 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { AddressDTO } from './address.dto';
-import { GeoDTO } from './geo.dto';
+import { AddressDto } from './address.dto';
+import { GeoDto } from './geo.dto';
 import { Type } from 'class-transformer';
 
-export class CreateEstablishmentDTO {
+export class CreateEstablishmentDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -41,12 +41,12 @@ export class CreateEstablishmentDTO {
   address: string;
 
   @ValidateNested()
-  @Type(() => AddressDTO)
-  addressInfo: AddressDTO;
+  @Type(() => AddressDto)
+  addressInfo: AddressDto;
 
   @ValidateNested()
-  @Type(() => GeoDTO)
-  geo: GeoDTO;
+  @Type(() => GeoDto)
+  geo: GeoDto;
 }
 
 export class UpdateEstablishmentDto {
@@ -82,12 +82,12 @@ export class UpdateEstablishmentDto {
   address: string;
 
   @ValidateNested()
-  @Type(() => AddressDTO)
-  addressInfo: AddressDTO;
+  @Type(() => AddressDto)
+  addressInfo: AddressDto;
 
   @ValidateNested()
-  @Type(() => GeoDTO)
-  geo: GeoDTO;
+  @Type(() => GeoDto)
+  geo: GeoDto;
 }
 
 export class GetEstablishmentDto {
@@ -95,7 +95,7 @@ export class GetEstablishmentDto {
   readonly _id: string;
 }
 
-export class DeleteEstablishmentDTO {
+export class DeleteEstablishmentDto {
   @IsMongoId()
   readonly _id: string;
 }
