@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EstablishmentModule } from './establishment/establishment.module';
 import { ProfessionalModule } from './professional/professional.module';
+import { ServiceModule } from './service/service.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,6 +14,7 @@ dotenv.config();
     MongooseModule.forRoot(process.env.MONGODB_URI),
     EstablishmentModule,
     ProfessionalModule,
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
