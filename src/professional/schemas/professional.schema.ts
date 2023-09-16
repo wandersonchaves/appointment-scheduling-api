@@ -21,10 +21,10 @@ export class Professional extends Document {
   @Prop({ type: Date, required: true })
   birthday: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: ['M', 'F'] })
   gender: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: ['A', 'I'], default: 'A' })
   status: string;
 
   @Prop({ type: Object, required: false })
