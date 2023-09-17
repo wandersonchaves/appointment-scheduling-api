@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Service extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Establishment' })
   establishmentId: string;
@@ -24,11 +24,8 @@ export class Service extends Document {
   @Prop()
   description: string;
 
-  @Prop()
+  @Prop({ required: true, enum: ['A', 'I', 'E'], default: 'A' })
   status: string;
-
-  @Prop()
-  registerDate: Date;
 }
 
 export const ServiceSchema = SchemaFactory.createForClass(Service);

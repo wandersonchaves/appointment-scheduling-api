@@ -60,9 +60,6 @@ export class CreateProfessionalDto {
   @IsObject()
   bankAccount: BankAccountDto;
 
-  @IsDateString()
-  registerDate: Date;
-
   @IsString()
   recipientId: string;
 }

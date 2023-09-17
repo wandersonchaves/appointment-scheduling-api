@@ -1,7 +1,7 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Professional extends Document {
   @Prop({ required: true })
   name: string;
@@ -37,9 +37,6 @@ export class Professional extends Document {
     number: string;
     dv: string;
   };
-
-  @Prop({ type: Date, default: Date.now })
-  registerDate: Date;
 
   @Prop({ required: true })
   recipientId: string;

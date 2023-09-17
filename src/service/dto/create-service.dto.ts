@@ -1,12 +1,4 @@
-import { Transform } from 'class-transformer';
-import {
-  IsMongoId,
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  IsDateString,
-  IsDate,
-} from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreateServiceDto {
   @IsMongoId()
@@ -40,9 +32,4 @@ export class CreateServiceDto {
   @IsString()
   @IsNotEmpty()
   status: string;
-
-  @Transform(({ value }) => new Date(value))
-  @IsDate()
-  @IsNotEmpty()
-  registerDate: Date;
 }
