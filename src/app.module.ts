@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EstablishmentModule } from './establishment/establishment.module';
 import { ProfessionalModule } from './professional/professional.module';
 import { ServiceModule } from './service/service.module';
+import { CustomerModule } from './customer/customer.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -15,6 +16,7 @@ dotenv.config();
     EstablishmentModule,
     ProfessionalModule,
     ServiceModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
