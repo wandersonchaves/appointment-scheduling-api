@@ -6,6 +6,7 @@ import { EstablishmentModule } from './establishment/establishment.module';
 import { ProfessionalModule } from './professional/professional.module';
 import { ServiceModule } from './service/service.module';
 import { CustomerModule } from './customer/customer.module';
+import { ScheduleModule } from './schedule/schedule.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,6 +18,7 @@ dotenv.config();
     ProfessionalModule,
     ServiceModule,
     CustomerModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
