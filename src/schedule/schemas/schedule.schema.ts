@@ -12,7 +12,7 @@ export const ScheduleSchema = new Schema(
   { timestamps: true },
 );
 
-interface ISchedule extends Document {
+export interface ISchedule extends Document {
   establishmentId: string;
   specialties: string[];
   collaborators: string[];
@@ -21,4 +21,7 @@ interface ISchedule extends Document {
   endDate: Date;
 }
 
-export const Schedule = mongoose.model<ISchedule>('Schedule', ScheduleSchema);
+export const ScheduleModel = mongoose.model<ISchedule>(
+  'Schedule',
+  ScheduleSchema,
+);
