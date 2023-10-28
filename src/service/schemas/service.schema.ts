@@ -1,31 +1,37 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-@Schema({ timestamps: true })
-export class Service extends Document {
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Establishment' })
+export const ServiceSchema = new Schema(
+  {
+    establishmentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Establishment',
+      required: true,
+    },
+    title: { type: String, required: true },
+    price: { type: Number, required: true },
+    duration: { type: Number, required: true },
+    commission: { type: Number, required: true },
+    recurrence: { type: Number, required: true },
+    description: { type: String, required: true },
+    status: {
+      type: String,
+      required: true,
+      enum: ['A', 'I', 'E'],
+      default: 'A',
+    },
+  },
+  { timestamps: true },
+);
+
+export interface IService extends Document {
   establishmentId: string;
-
-  @Prop()
   title: string;
-
-  @Prop()
   price: number;
-
-  @Prop()
   duration: number;
-
-  @Prop()
   commission: number;
-
-  @Prop()
   recurrence: number;
-
-  @Prop()
   description: string;
-
-  @Prop({ required: true, enum: ['A', 'I', 'E'], default: 'A' })
   status: string;
 }
 
-export const ServiceSchema = SchemaFactory.createForClass(Service);
+export const ServiceModel = mongoose.model<IService>('Service', ServiceSchema);

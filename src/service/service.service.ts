@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
-import { Service } from './schemas/service.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { IService } from './schemas/service.schema';
 
 @Injectable()
 export class ServiceService {
   constructor(
-    @InjectModel(Service.name)
-    private readonly serviceModel: Model<Service>,
+    @InjectModel('Service')
+    private readonly serviceModel: Model<IService>,
   ) {}
 
-  async create(createServiceDto: CreateServiceDto): Promise<Service> {
+  async create(createServiceDto: CreateServiceDto): Promise<IService> {
     try {
       const newService = new this.serviceModel(createServiceDto);
 
@@ -25,26 +25,36 @@ export class ServiceService {
     }
   }
 
-  async findAll(): Promise<Service[]> {
+  async findAll(): Promise<IService[]> {
     return await this.serviceModel.find().exec();
   }
 
-  async findOne(id: string): Promise<Service> {
-    return await this.serviceModel.findById(id).exec();
+  async findOne(id: string): Promise<IService> {
+    const service = await this.serviceModel.findById(id).exec();
+    if (!service) {
+      throw new NotFoundException('Serviço não encontrado.');
+    }
+    return service;
   }
 
   async update(
     id: string,
     updateServiceDto: UpdateServiceDto,
-  ): Promise<Service> {
-    return await this.serviceModel
-      .findByIdAndUpdate(id, updateServiceDto, {
-        new: true,
-      })
+  ): Promise<IService> {
+    const updatedService = await this.serviceModel
+      .findByIdAndUpdate(id, updateServiceDto, { new: true })
       .exec();
+    if (!updatedService) {
+      throw new NotFoundException('Serviço não encontrado.');
+    }
+    return updatedService;
   }
 
-  async remove(id: string): Promise<Service> {
-    return await this.serviceModel.findByIdAndRemove(id).exec();
+  async remove(id: string): Promise<{ message: string }> {
+    const result = await this.serviceModel.deleteOne({ _id: id }).exec();
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Serviço não encontrado.');
+    }
+    return { message: 'Serviço excluído com sucesso.' };
   }
 }
