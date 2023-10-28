@@ -27,5 +27,3 @@ export const AppointmentModel = mongoose.model<IAppointment>(
   'Appointment',
   AppointmentSchema,
 );
-
-// export class Appointment {}
