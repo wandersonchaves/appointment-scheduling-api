@@ -10,18 +10,21 @@ const BankAccountSchema = new Schema({
   dv: { type: String, required: true },
 });
 
-export const ProfessionalSchema = new Schema({
-  name: { type: String, required: true },
-  phone: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  photo: { type: String },
-  birthday: { type: Date },
-  gender: { type: String },
-  status: { type: String },
-  bankAccount: BankAccountSchema,
-  recipientId: { type: String },
-});
+export const ProfessionalSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    photo: { type: String },
+    birthday: { type: Date },
+    gender: { type: String },
+    status: { type: String },
+    bankAccount: BankAccountSchema,
+    recipientId: { type: String },
+  },
+  { timestamps: true },
+);
 
 export interface IProfessional extends Document {
   name: string;
