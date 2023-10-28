@@ -1,33 +1,37 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-@Schema({ timestamps: true })
-export class Professional extends Document {
-  @Prop({ required: true })
+const BankAccountSchema = new Schema({
+  holder: { type: String, required: true },
+  cpfCnpj: { type: String, required: true },
+  bank: { type: String, required: true },
+  type: { type: String, required: true },
+  agency: { type: String, required: true },
+  number: { type: String, required: true },
+  dv: { type: String, required: true },
+});
+
+export const ProfessionalSchema = new Schema({
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  photo: { type: String },
+  birthday: { type: Date },
+  gender: { type: String },
+  status: { type: String },
+  bankAccount: BankAccountSchema,
+  recipientId: { type: String },
+});
+
+export interface IProfessional extends Document {
   name: string;
-
-  @Prop({ required: true })
   phone: string;
-
-  @Prop({ required: true, unique: true })
   email: string;
-
-  @Prop({ required: true })
   password: string;
-
-  @Prop({ required: true })
-  photo: string;
-
-  @Prop({ type: Date, required: true })
-  birthday: Date;
-
-  @Prop({ required: true, enum: ['M', 'F'] })
-  gender: string;
-
-  @Prop({ required: true, enum: ['A', 'I'], default: 'A' })
-  status: string;
-
-  @Prop({ type: Object, required: false })
+  photo?: string;
+  birthday?: Date;
+  gender?: string;
+  status?: string;
   bankAccount: {
     holder: string;
     cpfCnpj: string;
@@ -37,9 +41,10 @@ export class Professional extends Document {
     number: string;
     dv: string;
   };
-
-  @Prop({ required: true })
   recipientId: string;
 }
 
-export const ProfessionalSchema = SchemaFactory.createForClass(Professional);
+export const ProfessionalModel = mongoose.model<IProfessional>(
+  'Professional',
+  ProfessionalSchema,
+);

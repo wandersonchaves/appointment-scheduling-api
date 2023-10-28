@@ -2,7 +2,6 @@ import {
   IsString,
   IsEmail,
   IsDateString,
-  IsObject,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -57,7 +56,6 @@ export class CreateProfessionalDto {
 
   @ValidateNested()
   @Type(() => BankAccountDto)
-  @IsObject()
   bankAccount: BankAccountDto;
 
   @IsString()
