@@ -1,4 +1,4 @@
-import { IsDate, IsMongoId, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsMongoId, IsNumber, IsString } from 'class-validator';
 
 export class CreateAppointmentDto {
   @IsMongoId()
@@ -10,7 +10,7 @@ export class CreateAppointmentDto {
   @IsMongoId()
   collaboratorId: string;
 
-  @IsDate()
+  @IsDateString()
   date: Date;
 
   @IsNumber()

@@ -19,7 +19,7 @@ export class AppointmentService {
     return createdAppointment.save();
   }
 
-  async findAll(): Promise<IAppointment[]> {
+  findAll(): Promise<IAppointment[]> {
     return this.appointmentModel.find().exec();
   }
 
