@@ -1,10 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsArray } from 'class-validator';
 
 export class GeoDto {
   @IsString()
   @IsNotEmpty()
   type: string;
 
+  @IsArray()
   @IsNumber({}, { each: true })
   @IsNotEmpty()
   coordinates: number[];

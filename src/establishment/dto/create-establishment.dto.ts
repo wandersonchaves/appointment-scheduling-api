@@ -1,11 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsEmail,
-  IsOptional,
-  IsMongoId,
-  ValidateNested,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, ValidateNested } from 'class-validator';
 
 import { AddressDto } from './address.dto';
 import { GeoDto } from './geo.dto';
@@ -17,11 +10,9 @@ export class CreateEstablishmentDto {
   name: string;
 
   @IsString()
-  @IsOptional()
   photo: string;
 
   @IsString()
-  @IsOptional()
   cover: string;
 
   @IsEmail()
@@ -37,7 +28,6 @@ export class CreateEstablishmentDto {
   phone: string;
 
   @IsString()
-  @IsOptional()
   address: string;
 
   @ValidateNested()
@@ -47,55 +37,4 @@ export class CreateEstablishmentDto {
   @ValidateNested()
   @Type(() => GeoDto)
   geo: GeoDto;
-}
-
-export class UpdateEstablishmentDto {
-  @IsMongoId()
-  readonly _id: string;
-
-  @IsString()
-  @IsOptional()
-  name: string;
-
-  @IsString()
-  @IsOptional()
-  photo: string;
-
-  @IsString()
-  @IsOptional()
-  cover: string;
-
-  @IsEmail()
-  @IsOptional()
-  email: string;
-
-  @IsString()
-  @IsOptional()
-  password: string;
-
-  @IsString()
-  @IsOptional()
-  phone: string;
-
-  @IsString()
-  @IsOptional()
-  address: string;
-
-  @ValidateNested()
-  @Type(() => AddressDto)
-  addressInfo: AddressDto;
-
-  @ValidateNested()
-  @Type(() => GeoDto)
-  geo: GeoDto;
-}
-
-export class GetEstablishmentDto {
-  @IsMongoId()
-  readonly _id: string;
-}
-
-export class DeleteEstablishmentDto {
-  @IsMongoId()
-  readonly _id: string;
 }

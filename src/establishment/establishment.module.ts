@@ -2,15 +2,12 @@ import { Module } from '@nestjs/common';
 import { EstablishmentService } from './establishment.service';
 import { EstablishmentController } from './establishment.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  Establishment,
-  EstablishmentSchema,
-} from './schemas/establishment.schema';
+import { EstablishmentSchema } from './schemas/establishment.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Establishment.name, schema: EstablishmentSchema },
+      { name: 'Establishment', schema: EstablishmentSchema },
     ]),
   ],
   controllers: [EstablishmentController],

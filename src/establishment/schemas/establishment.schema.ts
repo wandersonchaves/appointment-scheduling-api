@@ -1,30 +1,59 @@
-import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-@Schema({ timestamps: true })
-export class Establishment extends Document {
-  @Prop({ type: String, required: true })
+export const EstablishmentSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    photo: String,
+    cover: String,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: String,
+    addressInfo: {
+      city: String,
+      country: String,
+      uf: String,
+      cep: String,
+      number: Number,
+    },
+    geoInfo: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+  },
+  { timestamps: true },
+);
+
+EstablishmentSchema.index({ 'geoInfo.coordinates': '2dsphere' });
+
+export interface IEstablishment extends Document {
   name: string;
-
-  @Prop({ type: String, required: false })
   photo: string;
-
-  @Prop({ type: String, required: false })
   cover: string;
-
-  @Prop({ type: String, required: true, unique: true })
   email: string;
-
-  @Prop({ type: String, required: true })
   password: string;
-
-  @Prop({ type: String, required: true })
   phone: string;
-
-  @Prop({ type: String, required: true })
   address: string;
-
-  @Prop({ type: Object, required: false })
   addressInfo: {
     city: string;
     country: string;
@@ -32,21 +61,17 @@ export class Establishment extends Document {
     cep: string;
     number: number;
   };
-
-  @Prop({ type: Object, required: false })
   geoInfo: {
     type: {
       type: string;
       enum: ['Point'];
       default: 'Point';
     };
-    coordinates: {
-      type: [number];
-      required: true;
-    };
+    coordinates: [number];
   };
 }
 
-export const EstablishmentSchema = SchemaFactory.createForClass(Establishment);
-
-EstablishmentSchema.index({ geoInfo: '2dsphere' });
+export const EstablishmentModel = mongoose.model<IEstablishment>(
+  'Establishment',
+  EstablishmentSchema,
+);

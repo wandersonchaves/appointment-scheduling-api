@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class AddressDto {
   @IsString()
@@ -13,6 +13,7 @@ export class AddressDto {
   @IsNotEmpty()
   cep: string;
 
+  @IsNumber()
   @IsNotEmpty()
   number: number;
 
