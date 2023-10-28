@@ -8,43 +8,56 @@ enum DocumentTypeEnum {
 
 @Schema({ timestamps: true })
 export class Customer extends Document {
-  @Prop({ type: String, required: true })
+  @Prop({ required: true })
   name: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ required: true })
   phone: string;
 
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ required: true })
   password: string;
 
-  @Prop({ type: String, required: false })
+  @Prop()
   photo: string;
 
-  @Prop({ type: String, required: false })
+  @Prop()
   status: string;
 
-  @Prop({ type: String, required: false })
+  @Prop()
   gender: string;
 
-  @Prop({ type: Date, required: false })
+  @Prop()
   birthday: Date;
 
-  @Prop({ type: Number, required: false })
+  @Prop()
   document: number;
 
-  @Prop({ type: Object, required: false })
+  @Prop({
+    type: {
+      documentType: { type: String, enum: DocumentTypeEnum },
+      documentNumber: { type: String },
+    },
+  })
   documentInfo: {
-    documentType: DocumentTypeEnum;
+    documentType: string;
     documentNumber: string;
   };
 
-  @Prop({ type: String, required: false })
+  @Prop()
   address: string;
 
-  @Prop({ type: Object, required: false })
+  @Prop({
+    type: {
+      city: { type: String },
+      country: { type: String },
+      uf: { type: String },
+      cep: { type: String },
+      number: { type: Number },
+    },
+  })
   addressInfo: {
     city: string;
     country: string;
