@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,16 +12,17 @@ export class ServiceService {
     private readonly serviceModel: Model<IService>,
   ) {}
 
-  async create(createServiceDto: CreateServiceDto): Promise<IService> {
+  async create(
+    createServiceDto: CreateServiceDto,
+  ): Promise<IService | { message: string; status: number }> {
     try {
       const newService = new this.serviceModel(createServiceDto);
-
       return await newService.save();
     } catch (error) {
       return {
         message: 'Ocorreu um erro ao salvar o novo serviço.',
-        error,
-      } as any;
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
     }
   }
 

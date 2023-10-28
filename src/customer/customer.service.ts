@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { ICustomer } from './schemas/customer.schema';
@@ -16,18 +11,23 @@ export class CustomerService {
     @InjectModel('Customer') private readonly customerModel: Model<ICustomer>,
   ) {}
 
-  async create(createCustomerDto: CreateCustomerDto): Promise<ICustomer> {
+  async create(
+    createCustomerDto: CreateCustomerDto,
+  ): Promise<ICustomer | { message: string; status: number }> {
     try {
       const newCustomer = new this.customerModel(createCustomerDto);
       return await newCustomer.save();
     } catch (error) {
       if (error.code === 11000 && error.keyPattern?.email) {
-        throw new HttpException('O email já está em uso.', HttpStatus.CONFLICT);
+        return {
+          message: 'O email já está em uso.',
+          status: HttpStatus.CONFLICT,
+        };
       }
-      throw new HttpException(
-        'Ocorreu um erro ao salvar o novo cliente.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      return {
+        message: 'Ocorreu um erro ao salvar o novo cliente.',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
     }
   }
 

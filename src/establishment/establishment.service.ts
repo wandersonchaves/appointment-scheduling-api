@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -16,12 +16,21 @@ export class EstablishmentService {
     createEstablishmentDto: CreateEstablishmentDto,
   ): Promise<IEstablishment | { message: string; status: number }> {
     try {
-      return await this.establishmentModel.create(createEstablishmentDto);
+      const createdEstablishment = new this.establishmentModel(
+        createEstablishmentDto,
+      );
+      return await createdEstablishment.save();
     } catch (error) {
-      if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
-        return { message: 'O email já está em uso.', status: 409 };
+      if (error.code === 11000 && error.keyPattern?.email) {
+        return {
+          message: 'O email já está em uso.',
+          status: HttpStatus.CONFLICT,
+        };
       }
-      throw error;
+      return {
+        message: 'Ocorreu um erro ao salvar o novo estabelecimento.',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
     }
   }
 

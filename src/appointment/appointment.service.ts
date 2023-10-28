@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,9 +14,18 @@ export class AppointmentService {
 
   async create(
     createAppointmentDto: CreateAppointmentDto,
-  ): Promise<IAppointment> {
-    const createdAppointment = new this.appointmentModel(createAppointmentDto);
-    return createdAppointment.save();
+  ): Promise<IAppointment | { message: string; status: number }> {
+    try {
+      const createdAppointment = new this.appointmentModel(
+        createAppointmentDto,
+      );
+      return createdAppointment.save();
+    } catch (error) {
+      return {
+        message: 'Ocorreu um erro ao salvar o novo agendamento.',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
+    }
   }
 
   findAll(): Promise<IAppointment[]> {

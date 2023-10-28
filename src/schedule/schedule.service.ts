@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,15 +12,17 @@ export class ScheduleService {
     private readonly scheduleModel: Model<ISchedule>,
   ) {}
 
-  async create(createScheduleDto: CreateScheduleDto): Promise<ISchedule> {
+  async create(
+    createScheduleDto: CreateScheduleDto,
+  ): Promise<ISchedule | { message: string; status: number }> {
     try {
       const newSchedule = new this.scheduleModel(createScheduleDto);
       return await newSchedule.save();
     } catch (error) {
       return {
         message: 'Ocorreu um erro ao salvar o novo horário.',
-        error,
-      } as any;
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
     }
   }
 
