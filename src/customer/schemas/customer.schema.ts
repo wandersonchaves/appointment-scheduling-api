@@ -1,64 +1,61 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 enum DocumentTypeEnum {
   Individual = 'individual',
   Corporation = 'corporation',
 }
 
-@Schema({ timestamps: true })
-export class Customer extends Document {
-  @Prop({ required: true })
+const CustomerAddressInfoSchema = new Schema({
+  city: { type: String, required: true },
+  country: { type: String, required: true },
+  uf: { type: String, required: true },
+  cep: { type: String, required: true },
+  number: { type: Number, required: true },
+});
+
+const CustomerDocumentInfoSchema = new Schema({
+  documentType: {
+    type: String,
+    enum: Object.values(DocumentTypeEnum),
+    required: true,
+  },
+  documentNumber: { type: String, required: true },
+});
+
+export const CustomerSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    photo: { type: String, required: false },
+    status: { type: String, required: false },
+    gender: { type: String, required: false },
+    birthday: { type: Date, required: false },
+    document: { type: Number, required: false },
+    documentInfo: { type: CustomerDocumentInfoSchema, required: false },
+    address: { type: String, required: false },
+    addressInfo: { type: CustomerAddressInfoSchema, required: false },
+  },
+  { timestamps: true },
+);
+
+export interface ICustomer extends Document {
   name: string;
-
-  @Prop({ required: true })
   phone: string;
-
-  @Prop({ required: true, unique: true })
   email: string;
-
-  @Prop({ required: true })
   password: string;
-
-  @Prop()
-  photo: string;
-
-  @Prop()
-  status: string;
-
-  @Prop()
-  gender: string;
-
-  @Prop()
-  birthday: Date;
-
-  @Prop()
-  document: number;
-
-  @Prop({
-    type: {
-      documentType: { type: String, enum: DocumentTypeEnum },
-      documentNumber: { type: String },
-    },
-  })
-  documentInfo: {
+  photo?: string;
+  status?: string;
+  gender?: string;
+  birthday?: Date;
+  document?: number;
+  documentInfo?: {
     documentType: string;
     documentNumber: string;
   };
-
-  @Prop()
-  address: string;
-
-  @Prop({
-    type: {
-      city: { type: String },
-      country: { type: String },
-      uf: { type: String },
-      cep: { type: String },
-      number: { type: Number },
-    },
-  })
-  addressInfo: {
+  address?: string;
+  addressInfo?: {
     city: string;
     country: string;
     uf: string;
@@ -67,4 +64,7 @@ export class Customer extends Document {
   };
 }
 
-export const CustomerSchema = SchemaFactory.createForClass(Customer);
+export const CustomerModel = mongoose.model<ICustomer>(
+  'Customer',
+  CustomerSchema,
+);

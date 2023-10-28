@@ -6,17 +6,17 @@ import {
 } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { Customer } from './schemas/customer.schema';
+import { ICustomer } from './schemas/customer.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class CustomerService {
   constructor(
-    @InjectModel(Customer.name) private readonly customerModel: Model<Customer>,
+    @InjectModel('Customer') private readonly customerModel: Model<ICustomer>,
   ) {}
 
-  async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
+  async create(createCustomerDto: CreateCustomerDto): Promise<ICustomer> {
     try {
       const newCustomer = new this.customerModel(createCustomerDto);
       return await newCustomer.save();
@@ -31,11 +31,11 @@ export class CustomerService {
     }
   }
 
-  findAll(): Promise<Customer[]> {
+  findAll(): Promise<ICustomer[]> {
     return this.customerModel.find().exec();
   }
 
-  async findOne(id: string): Promise<Customer> {
+  async findOne(id: string): Promise<ICustomer> {
     const customer = await this.customerModel.findById(id).exec();
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado.');
@@ -46,7 +46,7 @@ export class CustomerService {
   async update(
     id: string,
     updateCustomerDto: UpdateCustomerDto,
-  ): Promise<Customer> {
+  ): Promise<ICustomer> {
     const updateCustomer = await this.customerModel
       .findByIdAndUpdate(id, updateCustomerDto, { new: true })
       .exec();
