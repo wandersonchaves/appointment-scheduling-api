@@ -4,6 +4,8 @@ import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IEstablishment } from './schemas/establishment.schema';
+import { ProfessionalEstablishmentDto } from './dto/professional-establishment.dto';
+import { DisassociateEstablishmentDto } from './dto/disassociate-establishment.dto';
 
 @Injectable()
 export class EstablishmentService {
@@ -65,5 +67,61 @@ export class EstablishmentService {
       throw new NotFoundException('Estabelecimento não encontrado.');
     }
     return { message: 'Estabelecimento excluído com sucesso.' };
+  }
+
+  async professionalEstablishment(
+    id: string,
+    professionalEstablishmentDto: ProfessionalEstablishmentDto,
+  ) {
+    const { professionalId, associationDate } = professionalEstablishmentDto;
+
+    const establishment = await this.establishmentModel.findById(id).exec();
+    if (!establishment) {
+      return null;
+    }
+
+    const existingAssociation = establishment.professionals.find(
+      (association) => association.professional == professionalId,
+    );
+
+    if (existingAssociation?.isDisabled) {
+      existingAssociation.isDisabled = false;
+      existingAssociation.associationDate = associationDate;
+    } else if (!existingAssociation) {
+      establishment.professionals.push({
+        professional: professionalId,
+        associationDate,
+        isDisabled: false,
+      });
+    }
+
+    await establishment.save();
+    return establishment;
+  }
+
+  async disassociateEstablishment(
+    id: string,
+    disassociateEstablishmentDto: DisassociateEstablishmentDto,
+  ) {
+    const { professionalId, disassociationDate } = disassociateEstablishmentDto;
+
+    const establishment = await this.establishmentModel.findById(id).exec();
+    if (!establishment) {
+      return null;
+    }
+
+    const association = establishment.professionals.find(
+      (association) => association.professional == professionalId,
+    );
+
+    if (!association) {
+      return null;
+    }
+
+    association.isDisabled = true;
+    association.disassociationDate = disassociationDate;
+
+    await establishment.save();
+    return establishment;
   }
 }

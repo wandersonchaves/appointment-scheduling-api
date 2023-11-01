@@ -40,6 +40,17 @@ export const EstablishmentSchema = new Schema(
         required: true,
       },
     },
+    professionals: [
+      {
+        professional: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Professional',
+        },
+        associationDate: { type: Date, required: true },
+        isDisabled: { type: Boolean, default: false },
+        disassociationDate: { type: Date },
+      },
+    ],
   },
   { timestamps: true },
 );
@@ -69,6 +80,12 @@ export interface IEstablishment extends Document {
     };
     coordinates: [number];
   };
+  professionals: {
+    professional: string;
+    associationDate: Date;
+    isDisabled: boolean;
+    disassociationDate?: Date;
+  }[];
 }
 
 export const EstablishmentModel = mongoose.model<IEstablishment>(
