@@ -22,6 +22,17 @@ export const ProfessionalSchema = new Schema(
     status: { type: String },
     bankAccount: BankAccountSchema,
     recipientId: { type: String },
+    establishments: [
+      {
+        establishment: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Establishment',
+        },
+        associationDate: { type: Date, required: true },
+        isDisabled: { type: Boolean, default: false },
+        disassociationDate: { type: Date },
+      },
+    ],
   },
   { timestamps: true },
 );
@@ -45,6 +56,12 @@ export interface IProfessional extends Document {
     dv: string;
   };
   recipientId: string;
+  establishments: {
+    establishment: string;
+    associationDate: Date;
+    isDisabled: boolean;
+    disassociationDate?: Date;
+  }[];
 }
 
 export const ProfessionalModel = mongoose.model<IProfessional>(

@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ProfessionalService } from './professional.service';
 import { CreateProfessionalDto } from './dto/create-professional.dto';
 import { UpdateProfessionalDto } from './dto/update-professional.dto';
+import { EstablishmentProfessionalDto } from './dto/establishment-professional.dto';
+import { DisassociateProfessionalDto } from './dto/disassociate-professional.dto';
 
 @Controller('professional')
 export class ProfessionalController {
@@ -41,5 +44,27 @@ export class ProfessionalController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.professionalService.remove(id);
+  }
+
+  @Post(':id/establishment')
+  async establishmentProfessional(
+    @Param('id') id: string,
+    @Body() establishmentProfessionalDto: EstablishmentProfessionalDto,
+  ) {
+    return this.professionalService.establishmentProfessional(
+      id,
+      establishmentProfessionalDto,
+    );
+  }
+
+  @Put(':id/disassociate')
+  async disassociateProfessional(
+    @Param('id') id: string,
+    @Body() disassociateProfessionalDto: DisassociateProfessionalDto,
+  ) {
+    return this.professionalService.disassociateProfessional(
+      id,
+      disassociateProfessionalDto,
+    );
   }
 }

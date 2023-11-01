@@ -4,6 +4,8 @@ import { UpdateProfessionalDto } from './dto/update-professional.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IProfessional } from './schemas/professional.schema';
+import { EstablishmentProfessionalDto } from './dto/establishment-professional.dto';
+import { DisassociateProfessionalDto } from './dto/disassociate-professional.dto';
 
 @Injectable()
 export class ProfessionalService {
@@ -63,5 +65,61 @@ export class ProfessionalService {
       throw new NotFoundException('Profissional não encontrado.');
     }
     return { message: 'Profissional excluído com sucesso.' };
+  }
+
+  async establishmentProfessional(
+    id: string,
+    establishmentProfessionalDto: EstablishmentProfessionalDto,
+  ) {
+    const { establishmentId, associationDate } = establishmentProfessionalDto;
+
+    const professional = await this.professionalModel.findById(id).exec();
+    if (!professional) {
+      return null;
+    }
+
+    const existingAssociation = professional.establishments.find(
+      (association) => association.establishment == establishmentId,
+    );
+
+    if (existingAssociation?.isDisabled) {
+      existingAssociation.isDisabled = false;
+      existingAssociation.associationDate = associationDate;
+    } else if (!existingAssociation) {
+      professional.establishments.push({
+        establishment: establishmentId,
+        associationDate,
+        isDisabled: false,
+      });
+    }
+
+    await professional.save();
+    return professional;
+  }
+
+  async disassociateProfessional(
+    id: string,
+    disassociateProfessionalDto: DisassociateProfessionalDto,
+  ) {
+    const { establishmentId, disassociationDate } = disassociateProfessionalDto;
+
+    const professional = await this.professionalModel.findById(id).exec();
+    if (!professional) {
+      return null;
+    }
+
+    const association = professional.establishments.find(
+      (association) => association.establishment == establishmentId,
+    );
+
+    if (!association) {
+      return null;
+    }
+
+    association.isDisabled = true;
+    association.disassociationDate = disassociationDate;
+
+    await professional.save();
+    return professional;
   }
 }
