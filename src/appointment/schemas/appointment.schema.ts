@@ -1,10 +1,20 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import {
+  CustomerAssociationSchema,
+  EstablishmentAssociationSchema,
+  IAssociation,
+  ProfessionalAssociationSchema,
+  ScheduleAssociationSchema,
+  ServiceAssociationSchema,
+} from 'src/shared/services/association/schemas/association.schema';
 
 export const AppointmentSchema = new Schema(
   {
-    establishmentId: { type: Schema.Types.ObjectId, required: true },
-    serviceId: { type: Schema.Types.ObjectId, required: true },
-    collaboratorId: { type: Schema.Types.ObjectId, required: true },
+    customer: CustomerAssociationSchema,
+    establishment: EstablishmentAssociationSchema,
+    professional: ProfessionalAssociationSchema,
+    service: ServiceAssociationSchema,
+    schedule: ScheduleAssociationSchema,
     date: { type: Date, required: true },
     commission: { type: Number, required: true },
     value: { type: Number, required: true },
@@ -14,9 +24,11 @@ export const AppointmentSchema = new Schema(
 );
 
 export interface IAppointment extends Document {
-  establishmentId: string;
-  serviceId: string;
-  collaboratorId: string;
+  customer: IAssociation;
+  establishment: IAssociation;
+  professional: IAssociation;
+  service: IAssociation;
+  schedule: IAssociation;
   date: Date;
   commission: number;
   value: number;

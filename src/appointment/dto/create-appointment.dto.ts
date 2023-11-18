@@ -1,14 +1,32 @@
-import { IsDateString, IsMongoId, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDateString,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { AssociationDto } from 'src/shared/services/association/dto/association.dto';
 
 export class CreateAppointmentDto {
-  @IsMongoId()
-  establishmentId: string;
+  @ValidateNested()
+  @Type(() => AssociationDto)
+  customer: AssociationDto;
 
-  @IsMongoId()
-  serviceId: string;
+  @ValidateNested()
+  @Type(() => AssociationDto)
+  establishment: AssociationDto;
 
-  @IsMongoId()
-  collaboratorId: string;
+  @ValidateNested()
+  @Type(() => AssociationDto)
+  service: AssociationDto;
+
+  @ValidateNested()
+  @Type(() => AssociationDto)
+  professional: AssociationDto;
+
+  @ValidateNested()
+  @Type(() => AssociationDto)
+  schedule: AssociationDto;
 
   @IsDateString()
   date: Date;
