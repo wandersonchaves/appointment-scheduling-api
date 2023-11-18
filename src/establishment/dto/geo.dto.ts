@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsNumber, IsArray } from 'class-validator';
 
-export class GeoDto {
+export class GeoInfoDto {
   @IsString()
   @IsNotEmpty()
   type: string;

@@ -1,7 +1,13 @@
-import { IsString, IsNotEmpty, IsEmail, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  ValidateNested,
+  IsOptional,
+} from 'class-validator';
 
-import { AddressDto } from './address.dto';
-import { GeoDto } from './geo.dto';
+import { AddressInfoDto } from './address.dto';
+import { GeoInfoDto } from './geo.dto';
 import { Type } from 'class-transformer';
 
 export class CreateEstablishmentDto {
@@ -9,9 +15,11 @@ export class CreateEstablishmentDto {
   @IsNotEmpty()
   name: string;
 
+  @IsOptional()
   @IsString()
   photo: string;
 
+  @IsOptional()
   @IsString()
   cover: string;
 
@@ -27,14 +35,31 @@ export class CreateEstablishmentDto {
   @IsNotEmpty()
   phone: string;
 
+  @IsOptional()
   @IsString()
   address: string;
 
+  @IsOptional()
   @ValidateNested()
-  @Type(() => AddressDto)
-  addressInfo: AddressDto;
+  @Type(() => AddressInfoDto)
+  addressInfo: AddressInfoDto;
 
   @ValidateNested()
-  @Type(() => GeoDto)
-  geo: GeoDto;
+  @Type(() => GeoInfoDto)
+  geoInfo: GeoInfoDto;
+
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => AssociateProfessionalDto)
+  // professionals: AssociateProfessionalDto[];
+
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => AssociateScheduleDto)
+  // schedules: AssociateScheduleDto[];
+
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => AssociateServiceDto)
+  // services: AssociateServiceDto[];
 }

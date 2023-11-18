@@ -3,6 +3,7 @@ import { EstablishmentService } from './establishment.service';
 import { EstablishmentController } from './establishment.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EstablishmentSchema } from './schemas/establishment.schema';
+import { SharedService } from 'src/shared/services/association/association.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { EstablishmentSchema } from './schemas/establishment.schema';
     ]),
   ],
   controllers: [EstablishmentController],
-  providers: [EstablishmentService],
+  providers: [EstablishmentService, SharedService],
 })
 export class EstablishmentModule {}

@@ -1,4 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import {
+  CustomerAssociationSchema,
+  IAssociation,
+  ProfessionalAssociationSchema,
+  ScheduleAssociationSchema,
+  ServiceAssociationSchema,
+} from 'src/shared/services/association/schemas/association.schema';
 
 export const EstablishmentSchema = new Schema(
   {
@@ -40,17 +47,10 @@ export const EstablishmentSchema = new Schema(
         required: true,
       },
     },
-    professionals: [
-      {
-        professional: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Professional',
-        },
-        associationDate: { type: Date, required: true },
-        isDisabled: { type: Boolean, default: false },
-        disassociationDate: { type: Date },
-      },
-    ],
+    customers: [CustomerAssociationSchema],
+    professionals: [ProfessionalAssociationSchema],
+    services: [ServiceAssociationSchema],
+    schedules: [ScheduleAssociationSchema],
   },
   { timestamps: true },
 );
@@ -80,12 +80,10 @@ export interface IEstablishment extends Document {
     };
     coordinates: [number];
   };
-  professionals: {
-    professional: string;
-    associationDate: Date;
-    isDisabled: boolean;
-    disassociationDate?: Date;
-  }[];
+  customers: IAssociation[];
+  professionals: IAssociation[];
+  services: IAssociation[];
+  schedules: IAssociation[];
 }
 
 export const EstablishmentModel = mongoose.model<IEstablishment>(

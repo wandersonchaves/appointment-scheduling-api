@@ -11,8 +11,7 @@ import {
 import { EstablishmentService } from './establishment.service';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
-import { ProfessionalEstablishmentDto } from './dto/professional-establishment.dto';
-import { DisassociateEstablishmentDto } from './dto/disassociate-establishment.dto';
+import { AssociationDto } from 'src/shared/services/association/dto/association.dto';
 
 @Controller('establishment')
 export class EstablishmentController {
@@ -46,25 +45,88 @@ export class EstablishmentController {
     return this.establishmentService.remove(id);
   }
 
-  @Post(':id/professional')
-  async professionalEstablishment(
+  @Post(':id/associate-customer')
+  async associateCustomer(
     @Param('id') id: string,
-    @Body() professionalEstablishmentDto: ProfessionalEstablishmentDto,
+    @Body() associateCustomerDto: AssociationDto,
   ) {
-    return this.establishmentService.professionalEstablishment(
+    return this.establishmentService.associateCustomer(
       id,
-      professionalEstablishmentDto,
+      associateCustomerDto,
     );
   }
 
-  @Put(':id/disassociate')
-  async disassociateEstablishment(
+  @Put(':id/disassociate-customer')
+  async disassociateCustomer(
     @Param('id') id: string,
-    @Body() disassociateEstablishmentDto: DisassociateEstablishmentDto,
+    @Body() disassociateCustomerDto: AssociationDto,
   ) {
-    return this.establishmentService.disassociateEstablishment(
+    return this.establishmentService.disassociateCustomer(
       id,
-      disassociateEstablishmentDto,
+      disassociateCustomerDto,
+    );
+  }
+
+  @Post(':id/associate-professional')
+  async associateProfessional(
+    @Param('id') id: string,
+    @Body() associateProfessionalDto: AssociationDto,
+  ) {
+    return this.establishmentService.associateProfessional(
+      id,
+      associateProfessionalDto,
+    );
+  }
+
+  @Put(':id/disassociate-professional')
+  async disassociateProfessional(
+    @Param('id') id: string,
+    @Body() disassociateProfessionalDto: AssociationDto,
+  ) {
+    return this.establishmentService.disassociateProfessional(
+      id,
+      disassociateProfessionalDto,
+    );
+  }
+
+  @Post(':id/associate-schedule')
+  async associateSchedule(
+    @Param('id') id: string,
+    @Body() associateScheduleDto: AssociationDto,
+  ) {
+    return this.establishmentService.associateSchedule(
+      id,
+      associateScheduleDto,
+    );
+  }
+
+  @Put(':id/disassociate-schedule')
+  async disassociateSchedule(
+    @Param('id') id: string,
+    @Body() disassociateScheduleDto: AssociationDto,
+  ) {
+    return this.establishmentService.disassociateSchedule(
+      id,
+      disassociateScheduleDto,
+    );
+  }
+
+  @Post(':id/associate-service')
+  async associateService(
+    @Param('id') id: string,
+    @Body() associateServiceDto: AssociationDto,
+  ) {
+    return this.establishmentService.associateService(id, associateServiceDto);
+  }
+
+  @Put(':id/disassociate-service')
+  async disassociateService(
+    @Param('id') id: string,
+    @Body() disassociateServiceDto: AssociationDto,
+  ) {
+    return this.establishmentService.disassociateService(
+      id,
+      disassociateServiceDto,
     );
   }
 }
