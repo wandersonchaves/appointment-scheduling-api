@@ -1,12 +1,13 @@
 import { Type } from 'class-transformer';
 import {
-  IsDateString,
+  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 
 enum Gender {
@@ -15,7 +16,7 @@ enum Gender {
   Other = 'other',
 }
 
-class DocumentDTO {
+class CustomerDocumentInfoDto {
   @IsString()
   @IsNotEmpty()
   type: string;
@@ -25,7 +26,7 @@ class DocumentDTO {
   number: string;
 }
 
-class AddressDTO {
+class CustomerAddressInfoDto {
   @IsString()
   @IsNotEmpty()
   city: string;
@@ -76,23 +77,26 @@ export class CreateCustomerDto {
   @IsOptional()
   gender?: Gender;
 
-  @IsDateString()
   @IsOptional()
-  birthday?: Date;
+  @IsDate()
+  @Type(() => Date)
+  birthday: Date;
 
+  @IsOptional()
   @IsNumber()
-  @IsOptional()
-  document?: number;
+  document: number;
 
-  @Type(() => DocumentDTO)
   @IsOptional()
-  documentInfo?: DocumentDTO;
+  @ValidateNested()
+  @Type(() => CustomerDocumentInfoDto)
+  documentInfo: CustomerDocumentInfoDto;
 
+  @IsOptional()
   @IsString()
-  @IsOptional()
   address?: string;
 
-  @Type(() => AddressDTO)
   @IsOptional()
-  addressInfo?: AddressDTO;
+  @ValidateNested()
+  @Type(() => CustomerAddressInfoDto)
+  addressInfo: CustomerAddressInfoDto;
 }

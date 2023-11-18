@@ -1,4 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import {
+  AppointmentAssociationSchema,
+  EstablishmentAssociationSchema,
+  IAssociation,
+} from 'src/shared/services/association/schemas/association.schema';
 
 enum DocumentTypeEnum {
   Individual = 'individual',
@@ -14,12 +19,12 @@ const CustomerAddressInfoSchema = new Schema({
 });
 
 const CustomerDocumentInfoSchema = new Schema({
-  documentType: {
+  type: {
     type: String,
     enum: Object.values(DocumentTypeEnum),
     required: true,
   },
-  documentNumber: { type: String, required: true },
+  number: { type: String, required: true },
 });
 
 export const CustomerSchema = new Schema(
@@ -36,6 +41,8 @@ export const CustomerSchema = new Schema(
     documentInfo: { type: CustomerDocumentInfoSchema, required: false },
     address: { type: String, required: false },
     addressInfo: { type: CustomerAddressInfoSchema, required: false },
+    establishments: [EstablishmentAssociationSchema],
+    appointments: [AppointmentAssociationSchema],
   },
   { timestamps: true },
 );
@@ -62,6 +69,8 @@ export interface ICustomer extends Document {
     cep: string;
     number: number;
   };
+  establishments: IAssociation[];
+  appointments: IAssociation[];
 }
 
 export const CustomerModel = mongoose.model<ICustomer>(

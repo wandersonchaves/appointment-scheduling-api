@@ -3,12 +3,13 @@ import { CustomerService } from './customer.service';
 import { CustomerController } from './customer.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CustomerSchema } from './schemas/customer.schema';
+import { SharedService } from 'src/shared/services/association/association.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Customer', schema: CustomerSchema }]),
   ],
   controllers: [CustomerController],
-  providers: [CustomerService],
+  providers: [CustomerService, SharedService],
 })
 export class CustomerModule {}
