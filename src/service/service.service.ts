@@ -1,15 +1,23 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IService } from './schemas/service.schema';
+import { SharedService } from 'src/shared/services/association/association.service';
+import { AssociationDto } from 'src/shared/services/association/dto/association.dto';
 
 @Injectable()
 export class ServiceService {
   constructor(
     @InjectModel('Service')
     private readonly serviceModel: Model<IService>,
+    private readonly sharedService: SharedService,
   ) {}
 
   async create(
@@ -57,5 +65,142 @@ export class ServiceService {
       throw new NotFoundException('Serviço não encontrado.');
     }
     return { message: 'Serviço excluído com sucesso.' };
+  }
+
+  async manageEntityAssociation(
+    id: string,
+    associationDto: AssociationDto,
+    associationPropertyName: string,
+    isAssociation: boolean,
+  ) {
+    const { associationId } = associationDto;
+
+    const establishment = await this.findOne(id);
+
+    const associations = establishment[associationPropertyName] || [];
+
+    const translatedEntityName = this.sharedService.translateEntity(
+      associationPropertyName,
+    );
+
+    const existingAssociation = associations.find(
+      (association) => association.associationId.toString() === associationId,
+    );
+
+    if (existingAssociation) {
+      if (existingAssociation.isDisabled && isAssociation) {
+        existingAssociation.isDisabled = false;
+        existingAssociation.associationDate = new Date();
+      } else if (!existingAssociation.isDisabled && !isAssociation) {
+        existingAssociation.isDisabled = true;
+        existingAssociation.disassociationDate = new Date();
+      } else {
+        throw new ConflictException(
+          `Serviço já está ${
+            isAssociation ? 'associado' : 'desassociado'
+          } a este ${translatedEntityName}.`,
+        );
+      }
+    } else if (isAssociation) {
+      const newAssociation = {
+        associationId,
+        associationDate: new Date(),
+        isDisabled: false,
+      };
+      associations.push(newAssociation);
+    } else {
+      throw new ConflictException(
+        `Profissional não está associado a este ${translatedEntityName}.`,
+      );
+    }
+
+    establishment[associationPropertyName] = associations;
+
+    await establishment.save();
+    return establishment;
+  }
+
+  async associateEntity(
+    id: string,
+    associationDto: AssociationDto,
+    associationPropertyName: string,
+  ) {
+    return this.manageEntityAssociation(
+      id,
+      associationDto,
+      associationPropertyName,
+      true,
+    );
+  }
+
+  async disassociateEntity(
+    id: string,
+    disassociateDto: AssociationDto,
+    associationPropertyName: string,
+  ) {
+    return this.manageEntityAssociation(
+      id,
+      disassociateDto,
+      associationPropertyName,
+      false,
+    );
+  }
+
+  async associateAppointment(
+    id: string,
+    associateAppointmentDto: AssociationDto,
+  ) {
+    return this.associateEntity(id, associateAppointmentDto, 'appointments');
+  }
+
+  async disassociateAppointment(
+    id: string,
+    disassociateAppointmentDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(
+      id,
+      disassociateAppointmentDto,
+      'appointments',
+    );
+  }
+
+  async associateEstablishment(
+    id: string,
+    associateEstablishmentDto: AssociationDto,
+  ) {
+    return this.associateEntity(
+      id,
+      associateEstablishmentDto,
+      'establishments',
+    );
+  }
+
+  async disassociateEstablishment(
+    id: string,
+    disassociateEstablishmentDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(
+      id,
+      disassociateEstablishmentDto,
+      'establishments',
+    );
+  }
+
+  async associateProfessional(
+    id: string,
+    associateProfessionalDto: AssociationDto,
+  ) {
+    return this.associateEntity(id, associateProfessionalDto, 'professionals');
+  }
+
+  async disassociateProfessional(
+    id: string,
+    disassociateProfessionalDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(
+      id,
+      disassociateProfessionalDto,
+      'professionals',
+    );
   }
 }

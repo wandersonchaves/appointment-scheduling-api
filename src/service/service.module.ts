@@ -3,12 +3,13 @@ import { ServiceService } from './service.service';
 import { ServiceController } from './service.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServiceSchema } from './schemas/service.schema';
+import { SharedService } from 'src/shared/services/association/association.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Service', schema: ServiceSchema }]),
   ],
   controllers: [ServiceController],
-  providers: [ServiceService],
+  providers: [ServiceService, SharedService],
 })
 export class ServiceModule {}

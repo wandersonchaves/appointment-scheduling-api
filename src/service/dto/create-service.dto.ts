@@ -1,4 +1,10 @@
-import { IsMongoId, IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsEnum,
+} from 'class-validator';
 
 export class CreateServiceDto {
   @IsMongoId()
@@ -31,5 +37,6 @@ export class CreateServiceDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsEnum(['A', 'I', 'E'])
   status: string;
 }

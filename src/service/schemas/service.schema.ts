@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import {
+  AppointmentAssociationSchema,
+  EstablishmentAssociationSchema,
+  IAssociation,
+  ProfessionalAssociationSchema,
+} from 'src/shared/services/association/schemas/association.schema';
 
 export const ServiceSchema = new Schema(
   {
-    establishmentId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Establishment',
-      required: true,
-    },
     title: { type: String, required: true },
     price: { type: Number, required: true },
     duration: { type: Number, required: true },
@@ -19,12 +20,14 @@ export const ServiceSchema = new Schema(
       enum: ['A', 'I', 'E'],
       default: 'A',
     },
+    establishments: [EstablishmentAssociationSchema],
+    professionals: [ProfessionalAssociationSchema],
+    appointments: [AppointmentAssociationSchema],
   },
   { timestamps: true },
 );
 
 export interface IService extends Document {
-  establishmentId: string;
   title: string;
   price: number;
   duration: number;
@@ -32,6 +35,9 @@ export interface IService extends Document {
   recurrence: number;
   description: string;
   status: string;
+  establishments: IAssociation[];
+  professionals: IAssociation[];
+  appointments: IAssociation[];
 }
 
 export const ServiceModel = mongoose.model<IService>('Service', ServiceSchema);
