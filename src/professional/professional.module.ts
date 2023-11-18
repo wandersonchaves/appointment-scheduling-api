@@ -3,6 +3,7 @@ import { ProfessionalService } from './professional.service';
 import { ProfessionalController } from './professional.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProfessionalSchema } from './schemas/professional.schema';
+import { SharedService } from 'src/shared/services/association/association.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { ProfessionalSchema } from './schemas/professional.schema';
     ]),
   ],
   controllers: [ProfessionalController],
-  providers: [ProfessionalService],
+  providers: [ProfessionalService, SharedService],
 })
 export class ProfessionalModule {}

@@ -1,8 +1,9 @@
 import {
   IsString,
   IsEmail,
-  IsDateString,
   ValidateNested,
+  IsDate,
+  IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -31,21 +32,26 @@ class BankAccountDto {
 
 export class CreateProfessionalDto {
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
+  @IsNotEmpty()
   phone: string;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @IsString()
+  @IsNotEmpty()
   password: string;
 
   @IsString()
   photo: string;
 
-  @IsDateString()
+  @IsDate()
+  @Type(() => Date)
   birthday: Date;
 
   @IsString()

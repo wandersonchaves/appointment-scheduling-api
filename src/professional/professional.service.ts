@@ -1,17 +1,23 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProfessionalDto } from './dto/create-professional.dto';
 import { UpdateProfessionalDto } from './dto/update-professional.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IProfessional } from './schemas/professional.schema';
-import { EstablishmentProfessionalDto } from './dto/establishment-professional.dto';
-import { DisassociateProfessionalDto } from './dto/disassociate-professional.dto';
+import { SharedService } from 'src/shared/services/association/association.service';
+import { AssociationDto } from 'src/shared/services/association/dto/association.dto';
 
 @Injectable()
 export class ProfessionalService {
   constructor(
     @InjectModel('Professional')
     private readonly professionalModel: Model<IProfessional>,
+    private readonly sharedService: SharedService,
   ) {}
 
   async create(
@@ -50,13 +56,13 @@ export class ProfessionalService {
     id: string,
     updateProfessionalDto: UpdateProfessionalDto,
   ): Promise<IProfessional> {
-    const updateCustomer = await this.professionalModel
+    const updateProfessional = await this.professionalModel
       .findByIdAndUpdate(id, updateProfessionalDto, { new: true })
       .exec();
-    if (!updateCustomer) {
+    if (!updateProfessional) {
       throw new NotFoundException('Profissional não encontrado.');
     }
-    return updateCustomer;
+    return updateProfessional;
   }
 
   async remove(id: string): Promise<{ message: string }> {
@@ -67,59 +73,144 @@ export class ProfessionalService {
     return { message: 'Profissional excluído com sucesso.' };
   }
 
-  async establishmentProfessional(
+  async manageEntityAssociation(
     id: string,
-    establishmentProfessionalDto: EstablishmentProfessionalDto,
+    associationDto: AssociationDto,
+    associationPropertyName: string,
+    isAssociation: boolean,
   ) {
-    const { establishmentId, associationDate } = establishmentProfessionalDto;
+    const { associationId } = associationDto;
 
-    const professional = await this.professionalModel.findById(id).exec();
-    if (!professional) {
-      return null;
-    }
+    const establishment = await this.findOne(id);
 
-    const existingAssociation = professional.establishments.find(
-      (association) => association.establishment == establishmentId,
+    const associations = establishment[associationPropertyName] || [];
+
+    const translatedEntityName = this.sharedService.translateEntity(
+      associationPropertyName,
     );
 
-    if (existingAssociation?.isDisabled) {
-      existingAssociation.isDisabled = false;
-      existingAssociation.associationDate = associationDate;
-    } else if (!existingAssociation) {
-      professional.establishments.push({
-        establishment: establishmentId,
-        associationDate,
+    const existingAssociation = associations.find(
+      (association) => association.associationId.toString() === associationId,
+    );
+
+    if (existingAssociation) {
+      if (existingAssociation.isDisabled && isAssociation) {
+        existingAssociation.isDisabled = false;
+        existingAssociation.associationDate = new Date();
+      } else if (!existingAssociation.isDisabled && !isAssociation) {
+        existingAssociation.isDisabled = true;
+        existingAssociation.disassociationDate = new Date();
+      } else {
+        throw new ConflictException(
+          `Profissional já está ${
+            isAssociation ? 'associado' : 'desassociado'
+          } a este ${translatedEntityName}.`,
+        );
+      }
+    } else if (isAssociation) {
+      const newAssociation = {
+        associationId,
+        associationDate: new Date(),
         isDisabled: false,
-      });
+      };
+      associations.push(newAssociation);
+    } else {
+      throw new ConflictException(
+        `Profissional não está associado a este ${translatedEntityName}.`,
+      );
     }
 
-    await professional.save();
-    return professional;
+    establishment[associationPropertyName] = associations;
+
+    await establishment.save();
+    return establishment;
   }
 
-  async disassociateProfessional(
+  async associateEntity(
     id: string,
-    disassociateProfessionalDto: DisassociateProfessionalDto,
+    associationDto: AssociationDto,
+    associationPropertyName: string,
   ) {
-    const { establishmentId, disassociationDate } = disassociateProfessionalDto;
-
-    const professional = await this.professionalModel.findById(id).exec();
-    if (!professional) {
-      return null;
-    }
-
-    const association = professional.establishments.find(
-      (association) => association.establishment == establishmentId,
+    return this.manageEntityAssociation(
+      id,
+      associationDto,
+      associationPropertyName,
+      true,
     );
+  }
 
-    if (!association) {
-      return null;
-    }
+  async disassociateEntity(
+    id: string,
+    disassociateDto: AssociationDto,
+    associationPropertyName: string,
+  ) {
+    return this.manageEntityAssociation(
+      id,
+      disassociateDto,
+      associationPropertyName,
+      false,
+    );
+  }
 
-    association.isDisabled = true;
-    association.disassociationDate = disassociationDate;
+  async associateAppointment(
+    id: string,
+    associateAppointmentDto: AssociationDto,
+  ) {
+    return this.associateEntity(id, associateAppointmentDto, 'appointments');
+  }
 
-    await professional.save();
-    return professional;
+  async disassociateAppointment(
+    id: string,
+    disassociateAppointmentDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(
+      id,
+      disassociateAppointmentDto,
+      'appointments',
+    );
+  }
+
+  async associateEstablishment(
+    id: string,
+    associateEstablishmentDto: AssociationDto,
+  ) {
+    return this.associateEntity(
+      id,
+      associateEstablishmentDto,
+      'establishments',
+    );
+  }
+
+  async disassociateEstablishment(
+    id: string,
+    disassociateEstablishmentDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(
+      id,
+      disassociateEstablishmentDto,
+      'establishments',
+    );
+  }
+
+  async associateSchedule(id: string, associateScheduleDto: AssociationDto) {
+    return this.associateEntity(id, associateScheduleDto, 'schedules');
+  }
+
+  async disassociateSchedule(
+    id: string,
+    disassociateScheduleDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(id, disassociateScheduleDto, 'schedules');
+  }
+
+  async associateService(id: string, associateServiceDto: AssociationDto) {
+    return this.associateEntity(id, associateServiceDto, 'services');
+  }
+
+  async disassociateService(
+    id: string,
+    disassociateServiceDto: AssociationDto,
+  ) {
+    return this.disassociateEntity(id, disassociateServiceDto, 'services');
   }
 }
